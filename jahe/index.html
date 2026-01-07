@@ -22,7 +22,7 @@
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
-        <script src="http://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet.pattern.js"></script>
         <script src="js/leaflet-hash.js"></script>
@@ -44,7 +44,7 @@
             }
             map.setMaxBounds(map.getBounds());
         }
-        var overlay_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var overlay_OSMStandard_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             opacity: 1.0
         });
         overlay_OSMStandard_0.addTo(map);
