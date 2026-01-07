@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi Geografis Produksi Biofarmaka Pati 2024</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <style>
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        .tab-button.active { border-bottom: 3px solid #4f46e5; color: #4f46e5; font-weight: 700; }
+        .table-responsive { overflow-x: auto; max-height: none; }
+        
+        .table-responsive::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .hero-bg {
+            background: linear-gradient(rgba(30, 27, 75, 0.8), rgba(30, 27, 75, 0.8)), 
+                        url('/tugu-bandeng-pati_169.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .v-line::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            z-index: 0;
+        }
+        .line-emerald::before { background-color: #10b981; }
+        .line-indigo::before { background-color: #6366f1; }
+        .v-item:last-child .v-line::before { display: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+
+        .footer-bg { background-color: #051937; } /* Navy Gelap sesuai gambar */
+    .btn-subscribe { background-color: #55acee; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-indigo-900 text-white sticky top-0 z-50 shadow-xl border-b border-indigo-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3 group cursor-pointer">
+                <div class="bg-white p-1.5 rounded-xl text-indigo-900 group-hover:rotate-12 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black uppercase tracking-tighter leading-none">SIG Biofarmaka</h1>
+                    <span class="text-[10px] text-indigo-300 font-bold uppercase tracking-widest">Kabupaten Pati 2024</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest">
+                <a href="#latar-belakang" class="hover:text-emerald-400 transition-colors">Latar Belakang</a>
+                <a href="#geografi" class="hover:text-emerald-400 transition-colors">Geografi</a>
+                <a href="#metodologi" class="hover:text-emerald-400 transition-colors">Metodologi</a>
+                <a href="#" onclick="showTab('peta')" class="bg-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-600 transition-all">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full">
+        <section class="hero-bg py-32 px-6 text-center text-white mb-12 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 max-w-4xl mx-auto">
+                <span class="inline-block bg-emerald-500 text-white text-[10px] font-black px-4 py-1 rounded-full mb-4 tracking-widest animate-pulse">DATA TERBARU 2024</span>
+                <h2 class="text-4xl md:text-6xl font-black mb-6 drop-shadow-2xl leading-tight">SISTEM INFORMASI GEOGRAFIS<br><span class="text-emerald-400">Persebaran Produksi Tanaman Biofarmaka di kabupaten Pati tahun 2024</span></h2>
+                <p class="text-lg md:text-xl font-medium italic opacity-90 mb-10 max-w-2xl mx-auto border-l-4 border-emerald-400 pl-4">"Pati Bumi Mina Tani - Mengolah kekayaan alam untuk kemandirian kesehatan bangsa."</p>
+            </div>
+        </section>
+        
+        <section id="latar-belakang" class="mb-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-800 px-8 py-4 text-white">
+                    <h3 class="text-xl font-bold uppercase tracking-widest">Latar Belakang</h3>
+                </div>
+                <div class="p-8 text-slate-700 leading-relaxed space-y-4 text-justify">
+                    <p>Kabupaten Pati merupakan salah satu wilayah di Provinsi Jawa Tengah yang memiliki potensi besar dalam pengembangan tanaman biofarmaka, seperti jahe, kunyit, temulawak, kencur, dan berbagai tanaman obat lainnya. Komoditas biofarmaka memiliki peran strategis dalam mendukung sektor pertanian, kesehatan, serta perekonomian masyarakat, khususnya bagi petani lokal dan pelaku usaha mikro kecil menengah (UMKM).</p>
+                    <p>Namun, tingkat produksi tanaman biofarmaka di Kabupaten Pati pada tahun 2024 menunjukkan variasi yang cukup signifikan antar kecamatan. Perbedaan tersebut dipengaruhi oleh berbagai faktor, antara lain kondisi agroklimat, karakteristik lahan, ketersediaan air, serta pola pemanfaatan lahan pertanian. Informasi produksi yang masih disajikan dalam bentuk data tabular seringkali menyulitkan pemangku kepentingan dalam memahami pola persebaran dan potensi wilayah secara menyeluruh.</p>
+                    <p>Pemanfaatan Sistem Informasi Geografis (SIG) menjadi solusi yang efektif untuk menyajikan data produksi tanaman biofarmaka secara spasial dan interaktif. Melalui SIG, informasi produksi dapat divisualisasikan dalam bentuk peta tematik yang mudah dipahami, sehingga mampu membantu pemerintah daerah, peneliti, serta masyarakat dalam proses perencanaan, pengambilan keputusan, dan pengembangan kebijakan pertanian yang berbasis data.</p>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-900 rounded-3xl p-8 text-white h-full flex flex-col justify-center shadow-indigo-200 shadow-2xl">
+                <div class="space-y-6">
+                    <div class="border-b border-indigo-700 pb-4">
+                        <h5 class="text-3xl font-black">21</h5>
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest">Kecamatan Terdata</p>
+                    </div>
+                    <div class="border-b border-indigo-700 pb-4">
+                        <h5 class="text-3xl font-black">9</h5>
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest">Komoditas Utama</p>
+                    </div>
+                    <div>
+                        <h5 class="text-3xl font-black">100%</h5>
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest">Aksesibilitas Digital</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+            <section id="geografi" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 px-8 py-5 text-white flex justify-between items-center">
+                    <h3 class="text-xs font-black uppercase tracking-widest">Analisis Geografis</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="p-8 space-y-8">
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-indigo mr-6">
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-bold shadow-sm z-10 relative">01</div>
+                        </div>
+                        <div class="flex-1 pb-6 border-b border-slate-100">
+                            <h5 class="font-bold text-slate-800 uppercase text-sm mb-2">Topografi Variatif</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed italic">Dari lereng Gunung Muria (Barat) hingga Pegunungan Kendeng (Selatan), menciptakan gradasi suhu yang mendukung pertumbuhan rimpang biofarmaka.</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-indigo mr-6">
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-bold shadow-sm z-10 relative">02</div>
+                        </div>
+                        <div class="flex-1 pb-6 border-b border-slate-100">
+                            <h5 class="font-bold text-slate-800 uppercase text-sm mb-2">Aksesibilitas Distribusi</h5>
+                            <p class="text-xs text-slate-500 leading-relaxed">Jalur Pantura memfasilitasi distribusi hasil bumi dari kecamatan produsen ke industri jamu besar di Jawa Tengah.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                        <h6 class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Eksplorasi Teritorial</h6>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-[11px] font-bold text-slate-700 uppercase mb-1">Korelasi Agroekosistem</p>
+                                <p class="text-xs text-slate-500 leading-relaxed">Analisis spasial menunjukkan bahwa <strong>Klaster Muria (Cluwak & Gembong)</strong> mendominasi produksi Jahe karena kesuburan tanah vulkanik. Sebaliknya, wilayah <strong>Selatan (Kendeng)</strong> memiliki potensi besar untuk Kunyit yang lebih toleran terhadap tanah kapur.</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-slate-700 uppercase mb-1">Strategi Perencanaan</p>
+                                <p class="text-xs text-slate-500 leading-relaxed">Peta ini membantu pemerintah mengidentifikasi wilayah potensial yang belum optimal, guna menentukan lokasi pusat pengolahan pasca-panen agar lebih dekat dengan sumber bahan baku utama.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metodologi" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-emerald-700 px-8 py-4 text-white font-bold text-xl uppercase tracking-widest">Metodologi Pengembangan</div>
+                <div class="p-10 space-y-12">
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-emerald mr-8">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-black z-10 relative">1</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg uppercase">Identifikasi Data Spasial dan Non Spasial</h5>
+                            <p class="text-sm text-slate-500 mt-1 text-justify">Tahap awal untuk menentukan kebutuhan data geografis (peta) dan data atribut (statistik produksi biofarmaka).</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-emerald mr-8">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-black z-10 relative">2</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg uppercase">Pengumpulan Data (BPS)</h5>
+                            <p class="text-sm text-slate-500 mt-1 text-justify">Proses akuisisi data sekunder dari Badan Pusat Statistik mengenai angka produksi tanaman obat Kabupaten Pati.</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-emerald mr-8">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-black z-10 relative">3</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg uppercase">Digitalisasi Peta</h5>
+                            <p class="text-sm text-slate-500 mt-1 text-justify">Konversi peta ke format digital dan pembersihan data agar siap dianalisis secara spasial.</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-emerald mr-8">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-black z-10 relative">4</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg uppercase">Penggabungan Data </h5>
+                            <p class="text-sm text-slate-500 mt-1 text-justify">Integrasi data statistik ke dalam tabel atribut peta digital berdasarkan nama kecamatan.</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start v-item">
+                        <div class="v-line line-emerald mr-8">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-black z-10 relative">5</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg uppercase">Integrasi WebGIS</h5>
+                            <p class="text-sm text-slate-500 mt-1 text-justify">Publikasi data yang telah diolah ke dalam sistem informasi interaktif berbasis web.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="border-b border-slate-300 mb-8 sticky top-16 bg-slate-50/95 backdrop-blur-md z-40 py-2">
+            <nav class="-mb-px flex space-x-6 overflow-x-auto no-scrollbar">
+                <button class="tab-button whitespace-nowrap py-4 px-2 text-[11px] font-black tracking-widest text-slate-400 active transition-all" onclick="showTab('peta')">🗺️ PETA INTERAKTIF</button>
+                <button class="tab-button whitespace-nowrap py-4 px-2 text-[11px] font-black tracking-widest text-slate-400 transition-all" onclick="showTab('tabel')">📋 TABEL DATA 2024</button>
+                <button class="tab-button whitespace-nowrap py-4 px-2 text-[11px] font-black tracking-widest text-slate-400 transition-all" onclick="showTab('ringkasan')">📊 ANALISIS STATISTIK</button>
+            </nav>
+        </div>
+        
+        <div id="peta-container" class="tab-content animate-fade">
+            <div class="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-200 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                    <div>
+                        <h5 class="font-bold text-slate-800">Visualisasi Spasial Wilayah</h5>
+                        <p class="text-xs text-slate-500">Pilih komoditas untuk memperbarui tampilan peta tematik</p>
+                    </div>
+                    <select id="filterKomoditas" class="py-3 px-6 border-2 border-indigo-100 rounded-2xl bg-slate-50 font-bold text-sm focus:border-indigo-500 outline-none transition-all shadow-sm" onchange="applyFilterAndRefresh()"></select>
+                </div>
+                <div class="relative rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 group">
+                    <iframe id="mapIframe" src="total/index.html" style="height: 600px; width: 100%;" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabel-data" class="tab-content hidden animate-fade">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div class="table-responsive rounded-2xl border border-slate-100">
+                    <table class="min-w-full divide-y divide-slate-200" id="dataTable">
+                        <thead class="bg-indigo-900 text-white sticky top-0"></thead>
+                        <tbody class="bg-white divide-y divide-slate-100 text-[11px]"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-ringkasan" class="tab-content hidden animate-fade">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h5 class="font-black text-slate-800 mb-8 text-center text-xs uppercase tracking-[0.2em]">Dominasi Komoditas (%)</h5>
+                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h5 class="font-black text-slate-800 mb-8 text-center text-xs uppercase tracking-[0.2em]">Top 10 Kecamatan Produsen (Kg)</h5>
+                    <div class="chart-container"><canvas id="barChart"></canvas></div>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-900 p-12 rounded-[3rem] text-white text-center shadow-2xl">
+                <p class="text-xs opacity-70 uppercase tracking-[0.3em] font-bold mb-4">Akumulasi Produksi Kabupaten Pati</p>
+                <h5 id="totalKg" class="text-6xl md:text-7xl font-black mt-2 tracking-tighter">0 <span class="text-2xl font-light text-indigo-300">Kg</span></h5>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                
+                <div class="space-y-6">
+                    <h4 class="text-xl font-bold tracking-tight">Profil</h4>
+                    <div class="space-y-4 text-slate-300 text-sm">
+                        <div class="flex items-start space-x-3">
+                            <svg class="h-5 w-5 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                            <span>Universitas PGRI Semarang</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
+                            <span>Call +01 1234567890</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                            <span>adikurniawan95387@gmail.com</span>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-5 pt-4">
+                        <a href="#" class="text-white hover:text-blue-400 transition-colors">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="#" class="text-white hover:text-blue-400 transition-colors">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                        </a>
+                        <a href="#" class="text-white hover:text-blue-400 transition-colors">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="#" class="text-white hover:text-blue-400 transition-colors">
+                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h4 class="text-xl font-bold tracking-tight">Subscribe</h4>
+                    <form class="space-y-4">
+                        <div class="border-b border-slate-500 py-2">
+                            <input type="email" placeholder="Enter email" class="bg-transparent border-none w-full text-slate-300 focus:outline-none text-sm placeholder:text-slate-500">
+                        </div>
+                        <button type="submit" class="btn-subscribe w-full md:w-48 py-3 px-6 text-white font-bold text-sm shadow-lg transition-transform hover:scale-105">Subscribe</button>
+                    </form>
+                </div>
+
+            </div>
+            <div class="mt-16 pt-8 border-t border-slate-800 text-center">
+                <p class="text-[10px] text-slate-500 uppercase tracking-[0.3em]">&copy; 2024 - Sistem Informasi Geografis Biofarmaka Pati</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    /* Data Utama */
+    const rawData = [
+    { nama_kecamatan: "Cluwak", produksi: { JAHE: 194000, KAPULAGA: 0, KENCUR: 500, KUNYIT: 250, LAOS: 3900, MENGKUDU: 2744, TEMUKUNCI: 109, JERUK_NIPIS: 0, SERAI: 2250, LUAS_PANEN: 32922 } },
+    { nama_kecamatan: "Gembong", produksi: { JAHE: 24000, KAPULAGA: 0, KENCUR: 126000, KUNYIT: 2500, LAOS: 32760, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 82700 } },
+    { nama_kecamatan: "Margorejo", produksi: { JAHE: 24000, KAPULAGA: 0, KENCUR: 140000, KUNYIT: 0, LAOS: 20000, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 10000 } },
+    { nama_kecamatan: "Tlogowungu", produksi: { JAHE: 3960, KAPULAGA: 28000, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 37800, LUAS_PANEN: 35300 } },
+    { nama_kecamatan: "Margoyoso", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 6244, SERAI: 0, LUAS_PANEN: 241 } },
+    { nama_kecamatan: "Sukolilo", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 120, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 1128, SERAI: 0, LUAS_PANEN: 42 } },
+    { nama_kecamatan: "Jaken", produksi: { JAHE: 30, KAPULAGA: 0, KENCUR: 28, KUNYIT: 1157, LAOS: 21, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Kayen", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 1762 } },
+    { nama_kecamatan: "Tayu", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 4000 } },
+    { nama_kecamatan: "Winong", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 400 } },
+    { nama_kecamatan: "Gunung Wungkal", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 400 } },
+    { nama_kecamatan: "Tambakromo", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Pucakwangi", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Batangan", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Juwana", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Jakenan", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Pati", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Gabus", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Wedarijaksa", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Dukuhseti", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } },
+    { nama_kecamatan: "Trangkil", produksi: { JAHE: 0, KAPULAGA: 0, KENCUR: 0, KUNYIT: 0, LAOS: 0, MENGKUDU: 0, TEMUKUNCI: 0, JERUK_NIPIS: 0, SERAI: 0, LUAS_PANEN: 0 } }
+];
+
+    const KOMODITAS_MAP = {
+        JAHE: { name: "Jahe", color: '#fbbf24', folder: 'jahe' },
+        KAPULAGA: { name: "Kapulaga", color: '#ef4444', folder: 'kapulaga' },
+        KENCUR: { name: "Kencur", color: '#10b981', folder: 'kencur' },
+        KUNYIT: { name: "Kunyit", color: '#eab308', folder: 'kunyit' },
+        LAOS: { name: "Laos", color: '#84cc16', folder: 'laos' },
+        MENGKUDU: { name: "Mengkudu", color: '#22c55e', folder: 'mengkudu' },
+        TEMUKUNCI: { name: "Temukunci", color: '#8b5cf6', folder: 'temukunci' },
+        JERUK_NIPIS: { name: "Jeruk Nipis", color: '#3b82f6', folder: 'jeruk_nipis' },
+        SERAI: { name: "Serai", color: '#ec4899', folder: 'serai' }
+    };
+
+    const DISPLAY_KEYS = Object.keys(KOMODITAS_MAP);
+    let charts = { bar: null, pie: null };
+
+    const formatNum = (n) => new Intl.NumberFormat('id-ID').format(n);
+
+    function applyFilterAndRefresh() {
+        const filter = document.getElementById('filterKomoditas').value;
+        const stats = calculateStats(filter);
+        document.getElementById('mapIframe').src = filter === 'TOTAL' ? 'total/index.html' : `${KOMODITAS_MAP[filter].folder}/index.html`;
+        document.getElementById('totalKg').innerHTML = `${formatNum(stats.totalSum)} <span class="text-2xl font-light text-indigo-300">Kg</span>`;
+        renderTable();
+        updateCharts(stats);
+    }
+
+    function calculateStats(filter) {
+        let totalSum = 0;
+        let ranking = [];
+        let pieData = {};
+        DISPLAY_KEYS.forEach(k => pieData[k] = 0);
+
+        rawData.forEach(item => {
+            let rowTotal = 0;
+            DISPLAY_KEYS.forEach(k => {
+                const val = item.produksi[k] || 0;
+                pieData[k] += val;
+                if (filter === 'TOTAL' || filter === k) rowTotal += val;
+            });
+            totalSum += rowTotal;
+            ranking.push({ name: item.nama_kecamatan, val: rowTotal });
+        });
+        ranking.sort((a, b) => b.val - a.val);
+        return { totalSum, ranking, pieData };
+    }
+
+    function renderTable() {
+    const head = document.querySelector('#dataTable thead');
+    const body = document.querySelector('#dataTable tbody');
+    
+    // Header Tabel
+    head.innerHTML = `<tr>
+        <th class="px-6 py-4 text-left text-[10px] tracking-widest uppercase">Kecamatan</th>` + 
+        DISPLAY_KEYS.map(k => `<th class="px-4 py-4 text-right text-[9px] font-medium uppercase opacity-80">${KOMODITAS_MAP[k].name}</th>`).join('') + 
+        `<th class="px-6 py-4 text-right bg-indigo-800 text-white text-[10px] tracking-widest uppercase">Luas Panen (m²)</th>
+         <th class="px-6 py-4 text-right bg-emerald-600 text-white text-[10px] tracking-widest uppercase">Total Produksi (Kg)</th>
+    </tr>`;
+    
+    // Isi Tabel
+    body.innerHTML = rawData.map(item => {
+        let t = 0;
+        let cells = `<td class="px-6 py-4 font-bold text-slate-800 border-r border-slate-50">${item.nama_kecamatan}</td>`;
+        
+        // Loop tiap komoditas untuk baris
+        DISPLAY_KEYS.forEach(k => { 
+            let p = item.produksi[k] || 0; 
+            t += p; 
+            cells += `<td class="px-4 py-4 text-right text-slate-500">${formatNum(p)}</td>`; 
+        });
+
+        // Ambil data luas panen
+        let lp = item.produksi.LUAS_PANEN || 0;
+
+        return `<tr class="hover:bg-slate-50 transition-colors">
+            ${cells}
+            <td class="px-6 py-4 text-right font-bold bg-indigo-50/50 text-indigo-900 border-l border-white">${formatNum(lp)}</td>
+            <td class="px-6 py-4 text-right font-black bg-indigo-50 text-indigo-900">${formatNum(t)}</td>
+        </tr>`;
+    }).join('');
+}
+
+    function updateCharts(stats) {
+        if (charts.bar) charts.bar.destroy();
+        if (charts.pie) charts.pie.destroy();
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+
+        charts.bar = new Chart(ctxBar, {
+            type: 'bar',
+            data: { labels: stats.ranking.slice(0, 10).map(r => r.name), datasets: [{ label: 'Produksi (Kg)', data: stats.ranking.slice(0, 10).map(r => r.val), backgroundColor: '#6366f1', borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        charts.pie = new Chart(ctxPie, {
+            type: 'doughnut',
+            data: { labels: DISPLAY_KEYS.map(k => KOMODITAS_MAP[k].name), datasets: [{ data: DISPLAY_KEYS.map(k => stats.pieData[k]), backgroundColor: DISPLAY_KEYS.map(k => KOMODITAS_MAP[k].color), borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+        });
+    }
+
+    function showTab(id) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        const target = id === 'peta' ? 'peta-container' : (id === 'tabel' ? 'tabel-data' : 'tab-ringkasan');
+        document.getElementById(target).classList.remove('hidden');
+        const btn = Array.from(document.querySelectorAll('.tab-button')).find(b => b.getAttribute('onclick').includes(id));
+        if(btn) btn.classList.add('active');
+        if(id === 'ringkasan') applyFilterAndRefresh();
+    }
+
+    const select = document.getElementById('filterKomoditas');
+    select.innerHTML = `<option value="TOTAL">📦 TOTAL PRODUKSI SELURUH</option>` + DISPLAY_KEYS.map(k => `<option value="${k}">🌱 ${KOMODITAS_MAP[k].name.toUpperCase()}</option>`).join('');
+    
+    applyFilterAndRefresh();
+    </script>
+</body>
+</html>
